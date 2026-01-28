@@ -54,7 +54,7 @@ class PembayaranController extends Controller
                 'nik' => $request->nik,
                 'email' => $request->email,
                 'hp' => $request->hp,
-                'bukti_pembayaran' => $filePath,
+                'bukti_pembayaran' => $filePath, 
                 'exp' => time() + $jwtExpiration
             ];
             $token = JWT::encode($tokenPayload, $jwtSecret, 'HS256');
@@ -77,7 +77,7 @@ class PembayaranController extends Controller
             );
 
              // Generate nomor transaksi acak antara 1000000 hingga 9999999
-             $transactionCode = rand(1000000, 9999999);
+             $transactionCode = rand(1000000, 9999999); 
 
              // Ambil data tambahan
              $jurusan = $penerima->jurusan ? $penerima->jurusan->nama_jurusan : 'N/A'; // Mengambil nama jurusan dari kolom 'nama_jurusan'
@@ -86,18 +86,18 @@ class PembayaranController extends Controller
              if (empty($penerima->nama)) {
                 Log::error('Nama penerima tidak ditemukan.');
                 return response()->json(['error' => 'Nama penerima tidak ditemukan.'], 400);
-            }
+            }            
 
             // Buat PDF menggunakan FPDF
             $pdfFilename = 'invoice_' . $penerima->nik . '_' . time() . '.pdf';
             $pdfFolder = 'invoices';
-
+            
             // Buat direktori dengan Storage facade
             Storage::disk('public')->makeDirectory($pdfFolder);
-
+            
             // Path untuk menyimpan PDF
             $pdfPath = storage_path('app/public/' . $pdfFolder . '/' . $pdfFilename);
-
+            
             // Pastikan direktori ada
             $directory = dirname($pdfPath);
             if (!is_dir($directory)) {
@@ -127,7 +127,7 @@ class PembayaranController extends Controller
                 Log::error("Background image tidak ditemukan di: " . $backgroundPath);
             }
 
-            $marginLeft = 20;
+            $marginLeft = 20; 
 
             // Judul dokumen
             $pdf->SetFont('Arial', 'B', 16);
@@ -135,25 +135,25 @@ class PembayaranController extends Controller
             $pdf->Ln(65);
 
             // Informasi transaksi
-            $pdf->SetX($marginLeft);
+            $pdf->SetX($marginLeft); 
             $pdf->SetFont('Arial', 'B', 15);
             $pdf->Cell(50, 10, 'Nomor Transaksi:', 0);
             $pdf->SetFont('Arial', '', 15);
             $pdf->Cell(0, 10, $transactionCode, 0, 1);
 
-            $pdf->SetX($marginLeft);
+            $pdf->SetX($marginLeft); 
             $pdf->SetFont('Arial', 'B', 15);
             $pdf->Cell(50, 10, 'Waktu Transaksi:', 0);
             $pdf->SetFont('Arial', '', 15);
             $pdf->Cell(0, 10, $currentTime, 0, 1);
 
-            $pdf->SetX($marginLeft);
+            $pdf->SetX($marginLeft); 
             $pdf->SetFont('Arial', 'B', 15);
             $pdf->Cell(50, 10, 'Nama:', 0);
             $pdf->SetFont('Arial', '', 15);
             $pdf->Cell(0, 10, $penerima->nama, 0, 1);
 
-            $pdf->SetX($marginLeft);
+            $pdf->SetX($marginLeft); 
             $pdf->SetFont('Arial', 'B', 15);
             $pdf->Cell(50, 10, 'Jurusan:', 0);
             $pdf->SetFont('Arial', '', 15);
@@ -189,7 +189,7 @@ class PembayaranController extends Controller
                             ->subject('Konfirmasi Pembayaran')
                             ->attach($pdfPath);
                 });
-
+            
                 Log::info('Email berhasil dikirim ke: ' . $request->email);
             } catch (\Exception $e) {
                 Log::error('Gagal mengirim email: ' . $e->getMessage());
@@ -197,7 +197,7 @@ class PembayaranController extends Controller
             }
 
             // Data untuk pesan WhatsApp
-            $pesanWhatsApp = "pesan tidak perlu dibalas (non reply chat)\nPembayaran Anda telah berhasil dikirim. Menunggu verifikasi dari admin,\nsilahkan cek email anda jika tidak ada silahkan cek di folder spam\n\npengambilan barang untuk PSDKU dapat di ambil di *GOR DJOEANG 45 POLITEKNIK NEGERI JEMBER pada hari Minggu 8 Maret 2026*\n\nDetail Transaksi:\nNama: {$penerima->nama}\nJurusan: {$jurusan}\nNomor Transaksi: {$transactionCode}\nWaktu: {$currentTime}\n\nBukti pembayaran: {$pdfUrl}";
+            $pesanWhatsApp = "pesan tidak perlu dibalas (non reply chat)\nPembayaran Anda telah berhasil dikirim. Menunggu verifikasi dari admin,\nsilahkan cek email anda jika tidak ada silahkan cek di folder spam\n\nDetail Transaksi:\nNama: {$penerima->nama}\nJurusan: {$jurusan}\nNomor Transaksi: {$transactionCode}\nWaktu: {$currentTime}\n\nBukti pembayaran: {$pdfUrl}";
 
             // Kirim WhatsApp dengan bukti PDF
             $this->kirimWhatsApp($request->hp, $pesanWhatsApp);
@@ -214,40 +214,36 @@ class PembayaranController extends Controller
     }
 
     /**
-     * Fungsi untuk mengirim pesan WhatsApp menggunakan Green API
+     * Fungsi untuk mengirim pesan WhatsApp
      */
     private function kirimWhatsApp($nomor, $pesan)
     {
         try {
-            // Cek Green API configuration
-            $instanceId = env('GREEN_API_INSTANCE_ID');
-            $token = env('GREEN_API_TOKEN');
+            $apiUrl = env('WAPANEL_URL');
+            $appKey = env('WAPANEL_APPKEY');
+            $authKey = env('WAPANEL_AUTHKEY');
 
-            // Cek apakah konfigurasi Green API tersedia
-            if (empty($instanceId) || empty($token)) {
-                Log::warning('Konfigurasi Green API tidak lengkap. Pengiriman WhatsApp dilewati.');
+            // Cek apakah konfigurasi WhatsApp API tersedia
+            if (empty($apiUrl) || empty($appKey) || empty($authKey)) {
+                Log::warning('Konfigurasi WhatsApp API tidak lengkap. Pengiriman WhatsApp dilewati.');
                 return [
                     'success' => false,
                     'message' => 'Konfigurasi WhatsApp tidak tersedia'
                 ];
             }
 
-            // Format nomor untuk Green API (harus format internasional tanpa +)
             $nomor = $this->formatNomor($nomor);
 
-            // Green API endpoint
-            $apiUrl = "https://api.green-api.com/waInstance{$instanceId}/sendMessage/{$token}";
-
             $data = [
-                'chatId' => $nomor . '@c.us',
+                'appkey' => $appKey,
+                'authkey' => $authKey,
+                'to' => $nomor,
                 'message' => $pesan,
             ];
 
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-            ])->post($apiUrl, $data);
+            $response = Http::asMultipart()->post($apiUrl, $data);
 
-            Log::info('Respon Green API WhatsApp:', $response->json());
+            Log::info('Respon API WhatsApp:', $response->json());
 
             return $response->json();
         } catch (\Exception $e) {

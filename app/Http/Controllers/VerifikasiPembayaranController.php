@@ -27,7 +27,7 @@ class VerifikasiPembayaranController extends Controller
         $kodeUnik = $validasiPenerimaan->kode_unik ?? '000000';
         $nomorTransaksi = random_int(100000, 999999);
         $tanggalPembayaran = now()->format('Y-m-d');
-
+        
         // Get meja_pengambilan from jurusan
         $mejaPengambilan = $penerima->jurusan->meja_pengambilan ?? 'N/A';
 
@@ -46,14 +46,14 @@ class VerifikasiPembayaranController extends Controller
         // Change the storage path from storage_path to public_path
         $pdfFileName = 'invoice_' . $penerima->nik . '.pdf';
         $pdfPath = public_path('invoices/' . $pdfFileName);
-
+        
         // Make sure the directory exists
         if (!file_exists(public_path('invoices'))) {
             mkdir(public_path('invoices'), 0755, true);
         }
-
+        
         $this->generatePDF($data, $pdfPath);
-
+        
         // Generate public URL for the PDF
         $pdfUrl = url('invoices/' . $pdfFileName);
 
@@ -90,20 +90,20 @@ class VerifikasiPembayaranController extends Controller
             }
 
             $penerima = $verifikasiPembayaran->penerima;
-
+            
             // Menyiapkan pesan WhatsApp yang informatif
             $pesan = "Halo {$penerima->nama},\n\n".
-                     "Mohon maaf, pembayaran Anda dengan NIK {$penerima->nik} ditolak dengan alasan:\n\n" .
+                     "Mohon maaf, pembayaran Anda dengan NIK {$penerima->nik} ditolak dengan alasan:\n\n" . 
                      "*{$alasanDitolak}*\n\n" .
                      "Silakan lakukan pembayaran ulang dengan bukti yang valid. Untuk informasi lebih lanjut, hubungi admin kami.\n\n" .
                      "Terima kasih.";
-
+            
             // Kirim pesan WhatsApp
             $this->kirimWhatsApp($penerima->no_telpon, $pesan);
 
             Log::info('Pesan penolakan berhasil dikirim ke: ' . $penerima->no_telpon);
             return response()->json(['success' => 'Pesan penolakan berhasil dikirim melalui WhatsApp!']);
-
+            
         } catch (\Exception $e) {
             Log::error('Kesalahan dalam pengiriman pesan penolakan: ' . $e->getMessage());
             return response()->json(['error' => 'Terjadi kesalahan dalam pengiriman pesan penolakan.'], 500);
@@ -113,7 +113,7 @@ class VerifikasiPembayaranController extends Controller
     private function generatePDF($data, $pdfPath, $positionY = 70) {
         $pdf = new FPDF();
         $pdf->AddPage();
-
+    
         // Add Background
         $backgroundPath = public_path('images/barcode.png');
         if (file_exists($backgroundPath)) {
@@ -121,96 +121,96 @@ class VerifikasiPembayaranController extends Controller
         } else {
             Log::error("Background image tidak ditemukan di: " . $backgroundPath);
         }
-
+    
         // Set initial position
         $pdf->SetY($positionY);
         $pdf->SetFont('Arial', 'B', 16);
         $pdf->Cell(0, 10, '', 0, 1, 'C');
         $pdf->Ln(5);
-
+    
         // Transaction details in a better format
         $pdf->SetFont('Arial', 'B', 12);
         $pdf->Cell(80, 10, 'Nomor Transaksi:', 0, 0, 'L');
         $pdf->SetFont('Arial', '', 12);
         $pdf->Cell(0, 10, $data['nomor_transaksi'], 0, 1, 'L');
-
+        
         $pdf->SetFont('Arial', 'B', 12);
         $pdf->Cell(80, 10, 'Tanggal Pembayaran:', 0, 0, 'L');
         $pdf->SetFont('Arial', '', 12);
         $pdf->Cell(0, 10, $data['tanggal_pembayaran'], 0, 1, 'L');
-
+        
         $pdf->Ln(5);
-
+        
         // Personal Information section
         $pdf->SetFont('Arial', 'B', 14);
         $pdf->Cell(0, 10, 'INFORMASI PENERIMA', 0, 1, 'L');
         $pdf->Ln(2);
-
+        
         // Set up consistent formatting for personal details
         $pdf->SetFont('Arial', 'B', 12);
         $pdf->Cell(80, 8, 'NIK:', 0, 0, 'L');
         $pdf->SetFont('Arial', '', 12);
         $pdf->Cell(0, 8, $data['nik'], 0, 1, 'L');
-
+        
         $pdf->SetFont('Arial', 'B', 12);
         $pdf->Cell(80, 8, 'Nama:', 0, 0, 'L');
         $pdf->SetFont('Arial', '', 12);
         $pdf->Cell(0, 8, $data['nama'], 0, 1, 'L');
-
+        
         $pdf->SetFont('Arial', 'B', 12);
         $pdf->Cell(80, 8, 'Jurusan:', 0, 0, 'L');
         $pdf->SetFont('Arial', '', 12);
         $pdf->Cell(0, 8, $data['jurusan'], 0, 1, 'L');
-
+        
         $pdf->SetFont('Arial', 'B', 12);
         $pdf->Cell(80, 8, 'Email:', 0, 0, 'L');
         $pdf->SetFont('Arial', '', 12);
         $pdf->Cell(0, 8, $data['email'], 0, 1, 'L');
-
+        
         $pdf->SetFont('Arial', 'B', 12);
         $pdf->Cell(80, 8, 'No. Telepon:', 0, 0, 'L');
         $pdf->SetFont('Arial', '', 12);
         $pdf->Cell(0, 8, $data['no_telpon'], 0, 1, 'L');
-
+        
         $pdf->SetFont('Arial', 'B', 12);
         $pdf->Cell(80, 8, 'Meja Pengambilan:', 0, 0, 'L');
         $pdf->SetFont('Arial', '', 12);
         $pdf->Cell(0, 8, $data['meja'], 0, 1, 'L');
-
+        
         $pdf->Ln(10);
-
+        
         // Barcode section
         $pdf->SetFont('Arial', 'B', 14);
         $pdf->Cell(0, 10, '', 0, 1, 'C');
-
+    
         // Generate barcode
         $barcode = new DNS1D();
         $barcodeData = $barcode->getBarcodePNG($data['kode_unik'], 'C128');
-
+    
         if ($barcodeData) {
             // Save barcode to public directory
             $barcodeFileName = 'barcode_' . $data['kode_unik'] . '.png';
             $barcodePath = public_path('barcodes/' . $barcodeFileName);
-
+            
             // Make sure the directory exists
             if (!file_exists(public_path('barcodes'))) {
                 mkdir(public_path('barcodes'), 0755, true);
             }
-
+            
             file_put_contents($barcodePath, base64_decode($barcodeData));
-
+            
             // Display barcode
             $pdf->Image($barcodePath, ($pdf->GetPageWidth() - 80) / 2, $pdf->GetY() +30, 80, 20);
-
+            
             // Display unique code under the barcode
             $pdf->SetY($pdf->GetY() + 52);
             $pdf->Cell(0, 10, $data['kode_unik'], 0, 1, 'C');
         } else {
             Log::error("Gagal membuat barcode untuk kode unik: " . $data['kode_unik']);
         }
-
+    
         $pdf->Ln(8); // Add spacing after barcode section
-
+    
         // Set normal font for the rest of the data
         $pdf->SetFont('Arial', '', 20);
         // Output PDF to the specified path
@@ -220,43 +220,25 @@ class VerifikasiPembayaranController extends Controller
     private function kirimWhatsApp($nomor, $pesan)
     {
         try {
-            // Cek Green API configuration
-            $instanceId = env('GREEN_API_INSTANCE_ID');
-            $token = env('GREEN_API_TOKEN');
-
-            // Cek apakah konfigurasi Green API tersedia
-            if (empty($instanceId) || empty($token)) {
-                Log::warning('Konfigurasi Green API tidak lengkap. Pengiriman WhatsApp dilewati.');
-                return [
-                    'success' => false,
-                    'message' => 'Konfigurasi WhatsApp tidak tersedia'
-                ];
-            }
-
-            // Format nomor untuk Green API (harus format internasional tanpa +)
             $nomor = $this->formatNomor($nomor);
-
-            // Green API endpoint
-            $apiUrl = "https://api.green-api.com/waInstance{$instanceId}/sendMessage/{$token}";
-
-            $data = [
-                'chatId' => $nomor . '@c.us',
+            $apiUrl = 'https://app.wapanels.com/api/create-message';
+            
+            $appKey = env('WAPANEL_APPKEY', 'e1eb99e1-f7fe-4af9-adea-ec41eae6ea32');
+            $authKey = env('WAPANEL_AUTHKEY', 'bRi1m1FkyfR4ptkRRJT2QMsGKVNaiHAC5DiSbFYrtzmkhqWgl2');
+            
+            $response = Http::asMultipart()->post($apiUrl, [
+                'appkey' => $appKey,
+                'authkey' => $authKey,
+                'to' => $nomor,
                 'message' => $pesan,
-            ];
-
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-            ])->post($apiUrl, $data);
-
-            Log::info('Respon Green API WhatsApp:', $response->json());
-
+                'sandbox' => 'false',
+            ]);
+            
+            Log::info('Respon API WhatsApp:', $response->json());
             return $response->json();
         } catch (\Exception $e) {
             Log::error('Gagal mengirim WhatsApp: ' . $e->getMessage());
-            return [
-                'success' => false,
-                'message' => $e->getMessage()
-            ];
+            return null;
         }
     }
 
