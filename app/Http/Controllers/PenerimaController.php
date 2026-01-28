@@ -114,15 +114,9 @@ class PenerimaController extends Controller
         $nama_rekening = 'DWP Polije';
 
         // Tentukan nomor rekening berdasarkan jurusan_id
-        if (in_array($penerima->jurusan_id, [1, 2, 3, 4, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17])) {
-            $rekening = 'Mandiri: 1430030816746';
-            $nama_rekening = 'Yeni Ida Kurniawati';
-        } elseif (in_array($penerima->jurusan_id, [6, 16, 18, 21])) {
-            $rekening = 'Mandiri: 1430030816720';
-            $nama_rekening = 'Yeni Ida Kurniawati';
-        } elseif (in_array($penerima->jurusan_id, [5, 19, 20, 22, 23, 24, 25, 26, 27])) {
-            $rekening = 'Mandiri: 1430029952551';
-            $nama_rekening = 'Yeni Ida Kurniawati';
+        if (in_array($penerima->jurusan_id, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27])) {
+            $rekening = 'BSI: 7284446498';
+            $nama_rekening = 'Dharma Wanita Persatuan';
         }
 
         return response()->json([
