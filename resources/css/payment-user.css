@@ -1,0 +1,589 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+html {
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+}
+
+body {
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.logo {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.logo img {
+    height: 50px;
+    transition: transform 0.3s ease;
+}
+
+.logo img:hover {
+    transform: scale(1.05);
+}
+
+.login {
+    font-weight: 600;
+    margin-right: 20px;
+    color: #333;
+}
+
+.background {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 20px 40px;
+}
+
+.form-container {
+    background: #ffffff;
+    padding: 35px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 800px;
+    text-align: left;
+    animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Form Header */
+.form-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 3px solid #3088d4;
+}
+
+.form-icon {
+    display: inline-block;
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #3088d4, #256bb0);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    box-shadow: 0 8px 20px rgba(48, 136, 212, 0.4);
+}
+
+.form-icon i {
+    font-size: 32px;
+    color: white;
+}
+
+.form-header h2 {
+    font-family: "Poppins", sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 5px;
+    letter-spacing: 0.5px;
+}
+
+.form-header .subtitle {
+    font-size: 14px;
+    color: #666;
+    font-weight: 400;
+    margin: 0;
+}
+
+/* Payment Info Card */
+.payment-info-card {
+    background: linear-gradient(135deg, #f0f8ff 0%, #e6f2ff 100%);
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 30px;
+    border: 2px solid #3088d4;
+    box-shadow: 0 5px 15px rgba(48, 136, 212, 0.2);
+}
+
+.info-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #3088d4;
+}
+
+.info-header i {
+    font-size: 24px;
+    color: #3088d4;
+}
+
+.info-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+.info-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.info-item label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.info-item label i {
+    color: #3088d4;
+}
+
+.nominal-section {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.nominal-display {
+    margin-top: 10px;
+}
+
+.nominal-number {
+    font-size: 32px;
+    font-weight: 700;
+    color: #e74c3c;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nominal-text {
+    font-size: 13px;
+    font-weight: 500;
+    color: #c0392b;
+    margin: 5px 0 0 0;
+    font-style: italic;
+}
+
+.bank-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.bank-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c3e50;
+    background: white;
+    padding: 12px;
+    border-radius: 8px;
+    margin: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.bank-value.loading {
+    color: #95a5a6;
+    font-style: italic;
+}
+
+/* Form Section */
+.form-section {
+    margin-bottom: 25px;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-title i {
+    color: #3088d4;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #2c3e50;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-group label i {
+    color: #3088d4;
+    font-size: 16px;
+}
+
+.required {
+    color: #e74c3c;
+    font-weight: 700;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-wrapper input {
+    padding-right: 40px;
+}
+
+.input-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    display: none;
+}
+
+.valid-icon {
+    color: #27ae60;
+}
+
+.form-container input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: #fafafa;
+}
+
+.form-container input:focus {
+    outline: none;
+    border-color: #3088d4;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(48, 136, 212, 0.1);
+}
+
+.form-container input:read-only {
+    background: #f5f5f5;
+    cursor: not-allowed;
+    color: #666;
+}
+
+.form-container input:not(:read-only):not(:placeholder-shown) {
+    border-color: #27ae60;
+}
+
+/* File Upload Styling */
+.file-upload {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 200px;
+    border: 3px dashed #3088d4;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #f8fbff 0%, #f0f7ff 100%);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    overflow: hidden;
+    padding: 20px;
+}
+
+.file-upload:hover {
+    background: linear-gradient(135deg, #e8f4ff 0%, #ddefff 100%);
+    border-color: #256bb0;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(48, 136, 212, 0.2);
+}
+
+.upload-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.file-upload img {
+    transition: all 0.3s ease;
+    max-width: 80px;
+    max-height: 80px;
+    object-fit: contain;
+}
+
+.upload-text-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#upload-text {
+    font-size: 16px;
+    color: #2c3e50;
+    margin: 0;
+    font-weight: 600;
+}
+
+#format-text {
+    font-size: 12px;
+    color: #7f8c8d;
+    margin: 0;
+    font-weight: 400;
+}
+
+/* Tombol Hapus */
+#remove-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    font-size: 18px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+    transition: all 0.3s ease;
+}
+
+#remove-btn:hover {
+    background: linear-gradient(135deg, #c0392b, #a93226);
+    transform: scale(1.1);
+}
+
+/* Modal Zoom */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: zoomIn 0.3s ease;
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.close {
+    position: absolute;
+    top: 30px;
+    right: 45px;
+    color: white;
+    font-size: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.close:hover {
+    color: #e74c3c;
+    transform: scale(1.1);
+}
+
+/* Warning Box */
+.warning-box {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
+    border: 2px solid #ffc107;
+    border-radius: 12px;
+    padding: 15px 20px;
+    margin: 25px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+}
+
+.warning-box i {
+    font-size: 24px;
+    color: #ff9800;
+    flex-shrink: 0;
+}
+
+.warning-box p {
+    margin: 0;
+    color: #856404;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: left;
+}
+
+/* Submit Button */
+.submit-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #3088d4 0%, #256bb0 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(48, 136, 212, 0.3);
+}
+
+.submit-btn:hover {
+    background: linear-gradient(135deg, #256bb0 0%, #1e5a96 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(48, 136, 212, 0.4);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+.submit-btn i {
+    font-size: 18px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header {
+        padding: 12px 20px;
+    }
+
+    .logo img {
+        height: 40px;
+    }
+
+    .background {
+        padding: 80px 15px 30px;
+    }
+
+    .form-container {
+        padding: 25px 20px;
+        border-radius: 15px;
+    }
+
+    .form-header h2 {
+        font-size: 22px;
+    }
+
+    .form-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .form-icon i {
+        font-size: 28px;
+    }
+
+    .nominal-number {
+        font-size: 26px;
+    }
+
+    .bank-info {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-info-card {
+        padding: 20px;
+    }
+
+    .section-title {
+        font-size: 16px;
+    }
+
+    .close {
+        top: 20px;
+        right: 30px;
+        font-size: 40px;
+    }
+}

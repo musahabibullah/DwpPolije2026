@@ -1,0 +1,65 @@
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+        .logo {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .logo img {
+            height: 40px;
+        }
+        .login {
+            font-weight: bold;
+            margin-right: 20px;
+        }
+        .background {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 60px;
+            background: url('background-placeholder.jpg') center/cover no-repeat;
+        }
+        .popup {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 50%;
+            text-align: center;
+            justify-items: center;
+        }
+        .popup img {
+            width: 60px;
+            margin-bottom: 15px;
+        }
+        .popup p {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .popup p span {
+            display: block;
+            font-size: 14px;
+            font-weight: normal;
+            color: #555;
+        }
