@@ -213,51 +213,48 @@ class PembayaranController extends Controller
         }
     }
 
-    /**
-     * Fungsi untuk mengirim pesan WhatsApp menggunakan Green API
-     */
-    private function kirimWhatsApp($nomor, $pesan)
-    {
-        try {
-            // Cek Green API configuration
-            $instanceId = env('GREEN_API_INSTANCE_ID');
-            $token = env('GREEN_API_TOKEN');
+/**
+ * Fungsi untuk mengirim pesan WhatsApp menggunakan Fonnte
+ */
+private function kirimWhatsApp($nomor, $pesan)
+{
+    try {
+        // Ambil token dari .env
+        $token = env('FONNTE_TOKEN');
 
-            // Cek apakah konfigurasi Green API tersedia
-            if (empty($instanceId) || empty($token)) {
-                Log::warning('Konfigurasi Green API tidak lengkap. Pengiriman WhatsApp dilewati.');
-                return [
-                    'success' => false,
-                    'message' => 'Konfigurasi WhatsApp tidak tersedia'
-                ];
-            }
-
-            // Format nomor untuk Green API (harus format internasional tanpa +)
-            $nomor = $this->formatNomor($nomor);
-
-            // Green API endpoint
-            $apiUrl = "https://api.green-api.com/waInstance{$instanceId}/sendMessage/{$token}";
-
-            $data = [
-                'chatId' => $nomor . '@c.us',
-                'message' => $pesan,
-            ];
-
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-            ])->post($apiUrl, $data);
-
-            Log::info('Respon Green API WhatsApp:', $response->json());
-
-            return $response->json();
-        } catch (\Exception $e) {
-            Log::error('Gagal mengirim WhatsApp: ' . $e->getMessage());
+        if (empty($token)) {
+            Log::warning('Konfigurasi Fonnte tidak lengkap. Pengiriman WhatsApp dilewati.');
             return [
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => 'Token tidak tersedia'
             ];
         }
+
+        // Format nomor tetap menggunakan 62...
+        $nomor = $this->formatNomor($nomor);
+
+        // Menggunakan Laravel Http Client (Wrapper dari Guzzle/cURL)
+        $response = Http::withHeaders([
+            'Authorization' => $token, // Sesuai dokumentasi: 'Authorization: TOKEN'
+        ])->asForm()->post('https://api.fonnte.com/send', [
+            'target'      => $nomor,
+            'message'     => $pesan,
+            'countryCode' => '62', // Default Indonesia
+            'delay'       => '2',  // Jeda pengiriman (opsional)
+        ]);
+
+        Log::info('Respon Fonnte WhatsApp:', $response->json());
+
+        return $response->json();
+
+    } catch (\Exception $e) {
+        Log::error('Gagal mengirim WhatsApp via Fonnte: ' . $e->getMessage());
+        return [
+            'success' => false,
+            'message' => $e->getMessage()
+        ];
     }
+}
 
     /**
      * Format nomor telepon
