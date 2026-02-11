@@ -197,7 +197,7 @@ class PembayaranController extends Controller
             }
 
             // Data untuk pesan WhatsApp
-            $pesanWhatsApp = "pesan tidak perlu dibalas (non reply chat)\nPembayaran Anda telah berhasil dikirim. Menunggu verifikasi dari admin,\nsilahkan cek email anda jika tidak ada silahkan cek di folder spam\n\npengambilan barang untuk PSDKU dapat di ambil di *GOR DJOEANG 45 POLITEKNIK NEGERI JEMBER pada hari Minggu 8 Maret 2026*\n\nDetail Transaksi:\nNama: {$penerima->nama}\nJurusan: {$jurusan}\nNomor Transaksi: {$transactionCode}\nWaktu: {$currentTime}\n\nBukti pembayaran: {$pdfUrl}";
+            $pesanWhatsApp = "pesan tidak perlu dibalas (non reply chat)\nPembayaran Anda telah berhasil dikirim. Menunggu verifikasi dari admin,\nsilahkan cek email anda jika tidak ada silahkan cek di folder spam\n\npengambilan barang untuk PSDKU dapat di ambil di *GOR DJOEANG 45 POLITEKNIK NEGERI JEMBER pada hari Minggu 8 Maret 2026*\n\nDetail Transaksi:\nNama: {$penerima->nama}\nJurusan: {$jurusan}\nNomor Transaksi: {$transactionCode}\nWaktu: {$currentTime}\n\nBukti pembayaran: {$pdfUrl}\n\n*NOTE :* untuk dapat mengakses link bukti pembayaran silahkan untuk menyimpan nomor ini sebagai kontak anda agar dapat melihat link nya";
 
             // Kirim WhatsApp dengan bukti PDF
             $this->kirimWhatsApp($request->hp, $pesanWhatsApp);
@@ -254,9 +254,7 @@ private function kirimWhatsApp($nomor, $pesan)
             'message' => $e->getMessage()
         ];
     }
-}
-
-    /**
+}    /**
      * Format nomor telepon
      */
     private function formatNomor($nomor)

@@ -69,7 +69,7 @@ class VerifikasiPembayaranController extends Controller
             return response()->json(['error' => 'Gagal mengirim email'], 500);
         }
 
-        $this->kirimWhatsApp($penerima->no_telpon, "Terima kasih sudah melakukan pembayaran. Anda dapat mengakses invoice di: " . $pdfUrl);
+        $this->kirimWhatsApp($penerima->no_telpon, "Terima kasih sudah melakukan pembayaran. Anda dapat mengakses invoice di: " . $pdfUrl . "\n\n*NOTE :* untuk dapat mengakses link bukti pembayaran silahkan untuk menyimpan nomor ini sebagai kontak anda agar dapat melihat link nya");
 
         return response()->json([
             'success' => 'Pembayaran berhasil dikirim, email dan pesan WhatsApp telah dikirim!',
