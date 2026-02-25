@@ -73,7 +73,7 @@ class PenerimaResource extends Resource
                 Forms\Components\TextInput::make('email')
                 ->label("Email")
                     ->email()
-                    ->required()
+                    //->required()
                     ->rules([
                         function (Forms\Components\TextInput $component) {
                             return function (string $attribute, $value, Closure $fail) use ($component) {
@@ -96,7 +96,7 @@ class PenerimaResource extends Resource
                 Forms\Components\TextInput::make('no_telpon')
                 ->label("Nomor Telepon")
                     ->tel()
-                    ->required()
+                    //->required()
                     ->rules([
                         function (Forms\Components\TextInput $component) {
                             return function (string $attribute, $value, Closure $fail) use ($component) {
@@ -125,7 +125,7 @@ class PenerimaResource extends Resource
                     ->required()
             ])
             ->columns(1);
-            
+
     }
 
     public static function table(Table $table): Table

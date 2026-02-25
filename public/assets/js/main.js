@@ -246,6 +246,6 @@
   }
 
   // Set target waktu (misalnya countdown menuju 17 Maret 2025)
-  const targetDate = new Date("March 31, 2026 23:59:59").getTime();
+  const targetDate = new Date("March 8, 2026 23:59:59").getTime();
   startCountdown(targetDate);
   })();
