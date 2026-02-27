@@ -76,14 +76,14 @@ class PembayaranController extends Controller
                 ]
             );
 
-             // Generate nomor transaksi acak antara 1000000 hingga 9999999
-             $transactionCode = rand(1000000, 9999999);
+            // Generate nomor transaksi acak antara 1000000 hingga 9999999
+            $transactionCode = rand(1000000, 9999999);
 
-             // Ambil data tambahan
-             $jurusan = $penerima->jurusan ? $penerima->jurusan->nama_jurusan : 'N/A'; // Mengambil nama jurusan dari kolom 'nama_jurusan'
-             $currentTime = now()->format('d-m-Y H:i:s'); // Waktu transaksi
+            // Ambil data tambahan
+            $jurusan = $penerima->jurusan ? $penerima->jurusan->nama_jurusan : 'N/A'; // Mengambil nama jurusan dari kolom 'nama_jurusan'
+            $currentTime = now()->format('d-m-Y H:i:s'); // Waktu transaksi
 
-             if (empty($penerima->nama)) {
+            if (empty($penerima->nama)) {
                 Log::error('Nama penerima tidak ditemukan.');
                 return response()->json(['error' => 'Nama penerima tidak ditemukan.'], 400);
             }
@@ -104,7 +104,7 @@ class PembayaranController extends Controller
                 mkdir($directory, 0755, true);
             }
 
-                        // Buat PDF menggunakan FPDF
+            // Buat PDF menggunakan FPDF
             $pdfFilename = 'bukti pembayaran_' . $penerima->nik . '_' . time() . '.pdf'; // <-- INI YANG DIGANTI
             $pdfFolder = 'invoices';
 
@@ -161,6 +161,32 @@ class PembayaranController extends Controller
 
             $pdf->Ln(10);
 
+            // Ambil tinggi halaman
+            $pageHeight = $pdf->GetPageHeight();
+
+            $kuponY = $pdf->GetPageHeight() - 57;
+            $kuponWidth = 40;
+
+            $teksKupon = strtoupper(
+                $transactionCode . "\n" .
+                $penerima->nama . "\n" .
+                $jurusan
+            );
+
+            $pdf->SetFont('Arial', 'B', 7);
+
+            // Kupon 1 (atur sendiri)
+            $pdf->SetXY(75, $kuponY);
+            $pdf->MultiCell($kuponWidth, 5, $teksKupon, 0, 'L');
+
+            // Kupon 2 (atur sendiri)
+            $pdf->SetXY(122, $kuponY);
+            $pdf->MultiCell($kuponWidth, 5, $teksKupon, 0, 'L');
+
+            // Kupon 3 (atur sendiri)
+            $pdf->SetXY(168, $kuponY);
+            $pdf->MultiCell($kuponWidth, 5, $teksKupon, 0, 'L');
+
             // Simpan PDF
             $pdf->Output('F', $pdfPath);
 
@@ -186,8 +212,8 @@ class PembayaranController extends Controller
             try {
                 Mail::send('emails.invoice', $data, function ($message) use ($request, $pdfPath) {
                     $message->to($request->email)
-                            ->subject('Konfirmasi Pembayaran')
-                            ->attach($pdfPath);
+                        ->subject('Konfirmasi Pembayaran')
+                        ->attach($pdfPath);
                 });
 
                 Log::info('Email berhasil dikirim ke: ' . $request->email);
@@ -197,7 +223,7 @@ class PembayaranController extends Controller
             }
 
             // Data untuk pesan WhatsApp
-            $pesanWhatsApp = "pesan tidak perlu dibalas (non reply chat)\nPembayaran Anda telah berhasil dikirim. Menunggu verifikasi dari admin,\nsilahkan cek email anda jika tidak ada silahkan cek di folder spam\n\npengambilan barang dapat di ambil di *GOR DJOEANG 45 POLITEKNIK NEGERI JEMBER pada hari Minggu 8 Maret 2026*\n\nDetail Transaksi:\nNama: {$penerima->nama}\nJurusan: {$jurusan}\nNomor Transaksi: {$transactionCode}\nWaktu: {$currentTime}\n\nBukti pembayaran: {$pdfUrl}\n\n*NOTE :* untuk dapat mengakses link bukti pembayaran silahkan untuk menyimpan nomor ini sebagai kontak anda agar dapat melihat link nya";
+            $pesanWhatsApp = "pesan tidak perlu dibalas (non reply chat)\nPembayaran Anda telah berhasil dikirim. Menunggu verifikasi dari admin,\nsilahkan cek email anda jika tidak ada silahkan cek di folder spam\n\npengambilan barang dapat di ambil di *GOR DJOEANG 45 POLITEKNIK NEGERI JEMBER pada hari Minggu 8 Maret 2026*\n\nDetail Transaksi:\nNama: {$penerima->nama}\nJurusan: {$jurusan}\nNomor Transaksi: {$transactionCode}\nWaktu: {$currentTime}\n\nBukti pembayaran: {$pdfUrl}\n\n*NOTE :* untuk dapat mengakses link bukti pembayaran silahkan untuk menyimpan nomor ini sebagai kontak anda agar dapat mengakses link nya";
 
             // Kirim WhatsApp dengan bukti PDF
             $this->kirimWhatsApp($request->hp, $pesanWhatsApp);
@@ -213,48 +239,48 @@ class PembayaranController extends Controller
         }
     }
 
-/**
- * Fungsi untuk mengirim pesan WhatsApp menggunakan Fonnte
- */
-private function kirimWhatsApp($nomor, $pesan)
-{
-    try {
-        // Ambil token dari .env
-        $token = env('FONNTE_TOKEN');
+    /**
+     * Fungsi untuk mengirim pesan WhatsApp menggunakan Fonnte
+     */
+    private function kirimWhatsApp($nomor, $pesan)
+    {
+        try {
+            // Ambil token dari .env
+            $token = env('FONNTE_TOKEN');
 
-        if (empty($token)) {
-            Log::warning('Konfigurasi Fonnte tidak lengkap. Pengiriman WhatsApp dilewati.');
+            if (empty($token)) {
+                Log::warning('Konfigurasi Fonnte tidak lengkap. Pengiriman WhatsApp dilewati.');
+                return [
+                    'success' => false,
+                    'message' => 'Token tidak tersedia'
+                ];
+            }
+
+            // Format nomor tetap menggunakan 62...
+            $nomor = $this->formatNomor($nomor);
+
+            // Menggunakan Laravel Http Client (Wrapper dari Guzzle/cURL)
+            $response = Http::withHeaders([
+                'Authorization' => $token, // Sesuai dokumentasi: 'Authorization: TOKEN'
+            ])->asForm()->post('https://api.fonnte.com/send', [
+                'target'      => $nomor,
+                'message'     => $pesan,
+                'countryCode' => '62', // Default Indonesia
+                'delay'       => '2',  // Jeda pengiriman (opsional)
+            ]);
+
+            Log::info('Respon Fonnte WhatsApp:', $response->json());
+
+            return $response->json();
+        } catch (\Exception $e) {
+            Log::error('Gagal mengirim WhatsApp via Fonnte: ' . $e->getMessage());
             return [
                 'success' => false,
-                'message' => 'Token tidak tersedia'
+                'message' => $e->getMessage()
             ];
         }
-
-        // Format nomor tetap menggunakan 62...
-        $nomor = $this->formatNomor($nomor);
-
-        // Menggunakan Laravel Http Client (Wrapper dari Guzzle/cURL)
-        $response = Http::withHeaders([
-            'Authorization' => $token, // Sesuai dokumentasi: 'Authorization: TOKEN'
-        ])->asForm()->post('https://api.fonnte.com/send', [
-            'target'      => $nomor,
-            'message'     => $pesan,
-            'countryCode' => '62', // Default Indonesia
-            'delay'       => '2',  // Jeda pengiriman (opsional)
-        ]);
-
-        Log::info('Respon Fonnte WhatsApp:', $response->json());
-
-        return $response->json();
-
-    } catch (\Exception $e) {
-        Log::error('Gagal mengirim WhatsApp via Fonnte: ' . $e->getMessage());
-        return [
-            'success' => false,
-            'message' => $e->getMessage()
-        ];
     }
-}    /**
+    /**
      * Format nomor telepon
      */
     private function formatNomor($nomor)

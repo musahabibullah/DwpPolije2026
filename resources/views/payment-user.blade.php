@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <link href="assets/img/logo_polije.png" rel="icon">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -7,7 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form Pembayaran DWP - Polije</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -24,8 +26,8 @@
         body {
             font-family: 'Poppins', sans-serif;
             text-align: center;
-            background: linear-gradient(135deg, rgba(48, 136, 212, 0.8), rgba(37, 107, 176, 0.9)), 
-                        url('images/gedungA3.png') center/cover no-repeat fixed;
+            background: linear-gradient(135deg, rgba(48, 136, 212, 0.8), rgba(37, 107, 176, 0.9)),
+                url('images/gedungA3.png') center/cover no-repeat fixed;
             min-height: 100vh;
             background-attachment: fixed;
         }
@@ -86,6 +88,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -445,6 +448,7 @@
                 transform: scale(0.5);
                 opacity: 0;
             }
+
             to {
                 transform: scale(1);
                 opacity: 1;
@@ -585,10 +589,11 @@
         }
     </style>
 </head>
+
 <body>
     <div class="header">
         <div class="logo">
-            <img src="images/Bazzar.png" alt="Logo Bazaar"> 
+            <img src="images/Bazzar.png" alt="Logo Bazaar">
         </div>
     </div>
     <div class="background">
@@ -608,7 +613,7 @@
                     <i class="fas fa-info-circle"></i>
                     <h3>INFORMASI PEMBAYARAN</h3>
                 </div>
-                
+
                 <div class="info-content">
                     <div class="info-item nominal-section">
                         <label><i class="fas fa-coins"></i> NOMINAL PEMBAYARAN</label>
@@ -621,7 +626,13 @@
                     <div class="bank-info">
                         <div class="info-item">
                             <label><i class="fas fa-university"></i> NO. REKENING</label>
-                            <p id="no_rekening" class="bank-value loading">Memuat data...</p>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <p id="no_rekening" class="bank-value loading" style="flex-grow: 1;">Memuat data...</p>
+                                <button type="button" onclick="copyRekening()" class="copy-btn" title="Salin Rekening"
+                                    style="background: #3088d4; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; transition: 0.3s;">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
                         </div>
 
                         <div class="info-item">
@@ -636,442 +647,476 @@
             <div class="form-section">
                 <h3 class="section-title"><i class="fas fa-user-edit"></i> Data Pembayar</h3>
 
-            <!-- Form Data Section -->
-            <div class="form-section">
-                <h3 class="section-title"><i class="fas fa-user-edit"></i> Data Pembayar</h3>
+                <!-- Form Data Section -->
+                <div class="form-section">
+                    <h3 class="section-title"><i class="fas fa-user-edit"></i> Data Pembayar</h3>
 
-            <div class="form-group">
-                <label for="nik">
-                    <i class="fas fa-id-card"></i> NIK/NIPPPK/NIP
-                    <span class="required">*</span>
-                </label>
-                <div class="input-wrapper">
-                    <input type="text" id="nik" placeholder="Masukkan NIK/NIPPPK/NIP" oninput="checkFields()" readonly>
-                    <i class="fas fa-check-circle input-icon valid-icon"></i>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="nama">
-                        <i class="fas fa-user"></i> Nama Lengkap
-                    </label>
-                    <input type="text" id="nama" placeholder="Nama akan terisi otomatis" readonly>
-                </div>
-                
-                <div class="form-group">
-                    <label for="jabatan">
-                        <i class="fas fa-briefcase"></i> Jabatan
-                    </label>
-                    <input type="text" id="jabatan" placeholder="Jabatan akan terisi otomatis" readonly>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="jurusan">
-                    <i class="fas fa-building"></i> Jurusan/Unit Kerja
-                </label>
-                <input type="text" id="jurusan" placeholder="Jurusan/Unit akan terisi otomatis" readonly>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="hp">
-                        <i class="fas fa-phone"></i> No. WhatsApp
-                        <span class="required">*</span>
-                    </label>
-                    <input type="text" id="hp" placeholder="08xxxxxxxxxx" oninput="checkFields()">
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">
-                        <i class="fas fa-envelope"></i> Email Aktif
-                        <span class="required">*</span>
-                    </label>
-                    <input type="email" id="email" placeholder="email@example.com" oninput="checkFields()">
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="file">
-                    <i class="fas fa-upload"></i> Bukti Pembayaran
-                    <span class="required">*</span>
-                </label>
-                <div class="file-upload" id="fileUploadBox" onclick="document.getElementById('file').click()">
-                    <div class="upload-content">
-                        <img id="preview" src="images/arrow.png" alt="Upload Icon">
-                        <div class="upload-text-wrapper">
-                            <p id="upload-text">Klik atau seret file ke sini</p>
-                            <p id="format-text">Format: JPG, JPEG, PNG (Max: 2MB)</p>
+                    <div class="form-group">
+                        <label for="nik">
+                            <i class="fas fa-id-card"></i> NIK/NIPPPK/NIP
+                            <span class="required">*</span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="text" id="nik" placeholder="Masukkan NIK/NIPPPK/NIP"
+                                oninput="checkFields()" readonly>
+                            <i class="fas fa-check-circle input-icon valid-icon"></i>
                         </div>
                     </div>
-                    <input type="file" id="file" accept="image/*" onchange="previewImage(event)" style="display: none;">
-                    <span id="remove-btn" onclick="removeImage(event)">
-                        <i class="fas fa-times"></i>
-                    </span>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nama">
+                                <i class="fas fa-user"></i> Nama Lengkap
+                            </label>
+                            <input type="text" id="nama" placeholder="Nama akan terisi otomatis" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="jabatan">
+                                <i class="fas fa-briefcase"></i> Jabatan
+                            </label>
+                            <input type="text" id="jabatan" placeholder="Jabatan akan terisi otomatis" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="jurusan">
+                            <i class="fas fa-building"></i> Jurusan/Unit Kerja
+                        </label>
+                        <input type="text" id="jurusan" placeholder="Jurusan/Unit akan terisi otomatis" readonly>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="hp">
+                                <i class="fas fa-phone"></i> No. WhatsApp
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" id="hp" placeholder="08xxxxxxxxxx" oninput="checkFields()">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">
+                                <i class="fas fa-envelope"></i> Email Aktif
+                                <span class="required">*</span>
+                            </label>
+                            <input type="email" id="email" placeholder="email@example.com"
+                                oninput="checkFields()">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="file">
+                            <i class="fas fa-upload"></i> Bukti Pembayaran
+                            <span class="required">*</span>
+                        </label>
+                        <div class="file-upload" id="fileUploadBox"
+                            onclick="document.getElementById('file').click()">
+                            <div class="upload-content">
+                                <img id="preview" src="images/arrow.png" alt="Upload Icon">
+                                <div class="upload-text-wrapper">
+                                    <p id="upload-text">Klik atau seret file ke sini</p>
+                                    <p id="format-text">Format: JPG, JPEG, PNG (Max: 2MB)</p>
+                                </div>
+                            </div>
+                            <input type="file" id="file" accept="image/*" onchange="previewImage(event)"
+                                style="display: none;">
+                            <span id="remove-btn" onclick="removeImage(event)">
+                                <i class="fas fa-times"></i>
+                            </span>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            </div>
-            
-            <!-- Modal untuk memperbesar gambar -->
-            <div id="imageModal" class="modal" onclick="closeModal()">
-                <span class="close">&times;</span>
-                <img class="modal-content" id="modalImg">
-            </div>
 
-            <div class="warning-box">
-                <i class="fas fa-exclamation-triangle"></i>
-                <p>Harap periksa kembali data Anda dengan teliti. Kesalahan input bukan tanggung jawab admin.</p>
-            </div>
+                <!-- Modal untuk memperbesar gambar -->
+                <div id="imageModal" class="modal" onclick="closeModal()">
+                    <span class="close">&times;</span>
+                    <img class="modal-content" id="modalImg">
+                </div>
 
-            <button id="submitBtn" class="submit-btn" onclick="submitForm()">
-                <i class="fas fa-paper-plane"></i> Kirim Pembayaran
-            </button>
+                <div class="warning-box">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Harap periksa kembali data Anda dengan teliti. Kesalahan input bukan tanggung jawab admin.</p>
+                </div>
+
+                <button id="submitBtn" class="submit-btn" onclick="submitForm()">
+                    <i class="fas fa-paper-plane"></i> Kirim Pembayaran
+                </button>
+            </div>
         </div>
-    </div>
 
-    <script>
-    function checkFields() {
-        let nik = $("#nik").val().trim();
+        <script>
+            function checkFields() {
+                let nik = $("#nik").val().trim();
 
-        if (nik.length > 0) {
-            $.ajax({
-                url: '/get-rekening/' + nik,
-                type: 'GET',
-                success: function (response) {
-                    console.log(response);
+                if (nik.length > 0) {
+                    $.ajax({
+                        url: '/get-rekening/' + nik,
+                        type: 'GET',
+                        success: function(response) {
+                            console.log(response);
 
-                    if (response.message) {
-                        // Jika NIK tidak ditemukan
-                        $("#nama").val("");
-                        $("#jurusan").val("");
-                        $("#jabatan").val("");
-                        $("#no_rekening").text("XXXX-XXXX-XXXXX");
-                        $("#nama_rekening").text("DWP Polije");
-                    } else {
-                        // Jika NIK ditemukan, tampilkan data
-                        $("#nama").val(response.nama);
-                        $("#jurusan").val(response.jurusan);
-                        $("#jabatan").val(response.jabatan);
-                        $("#no_rekening").text(response.rekening);
-                        $("#nama_rekening").text(response.nama_rekening);
-                    }
-                },
-                error: function () {
-                    console.log("Error mengambil data");
+                            if (response.message) {
+                                // Jika NIK tidak ditemukan
+                                $("#nama").val("");
+                                $("#jurusan").val("");
+                                $("#jabatan").val("");
+                                $("#no_rekening").text("XXXX-XXXX-XXXXX");
+                                $("#nama_rekening").text("DWP Polije");
+                            } else {
+                                // Jika NIK ditemukan, tampilkan data
+                                $("#nama").val(response.nama);
+                                $("#jurusan").val(response.jurusan);
+                                $("#jabatan").val(response.jabatan);
+                                $("#no_rekening").text(response.rekening);
+                                $("#nama_rekening").text(response.nama_rekening);
+                            }
+                        },
+                        error: function() {
+                            console.log("Error mengambil data");
+                            $("#nama").val("");
+                            $("#jurusan").val("");
+                            $("#jabatan").val("");
+                            $("#no_rekening").text("XXXX-XXXX-XXXXX");
+                            $("#nama_rekening").text("DWP Polije");
+                        }
+                    });
+                } else {
                     $("#nama").val("");
                     $("#jurusan").val("");
                     $("#jabatan").val("");
                     $("#no_rekening").text("XXXX-XXXX-XXXXX");
                     $("#nama_rekening").text("DWP Polije");
                 }
+            }
+
+            // Jalankan checkFields setiap kali input NIK berubah
+            $(document).ready(function() {
+                $("#nik").on("input", function() {
+                    checkFields();
+                });
             });
-        } else {
-            $("#nama").val("");
-            $("#jurusan").val("");
-            $("#jabatan").val("");
-            $("#no_rekening").text("XXXX-XXXX-XXXXX");
-            $("#nama_rekening").text("DWP Polije");
-        }
-    }
+        </script>
 
-    // Jalankan checkFields setiap kali input NIK berubah
-    $(document).ready(function () {
-        $("#nik").on("input", function () {
-            checkFields();
-        });
-    });
-</script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                document.getElementById("nik").addEventListener("input", function() {
+                    let nik = this.value.trim();
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("nik").addEventListener("input", function () {
-            let nik = this.value.trim();
+                    if (nik.length > 0) {
+                        fetch(`/get-rekening/${nik}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log(data);
 
-            if (nik.length > 0) {
-                fetch(`/get-rekening/${nik}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data);
-
-                        if (data.message) {
-                            document.getElementById("nama").value = "";
-                            document.getElementById("jurusan").value = "";
-                            document.getElementById("jabatan").value = "";
-                            document.getElementById("no_rekening").textContent = "XXXX-XXXX-XXXXX";
-                            document.getElementById("nama_rekening").textContent = "DWP Polije";
-                        } else {
-                            document.getElementById("nama").value = data.nama;
-                            document.getElementById("jurusan").value = data.jurusan;
-                            document.getElementById("jabatan").value = data.jabatan;
-                            document.getElementById("no_rekening").textContent = data.rekening;
-                            document.getElementById("nama_rekening").textContent = data.nama_rekening;
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error:", error);
+                                if (data.message) {
+                                    document.getElementById("nama").value = "";
+                                    document.getElementById("jurusan").value = "";
+                                    document.getElementById("jabatan").value = "";
+                                    document.getElementById("no_rekening").textContent = "XXXX-XXXX-XXXXX";
+                                    document.getElementById("nama_rekening").textContent = "DWP Polije";
+                                } else {
+                                    document.getElementById("nama").value = data.nama;
+                                    document.getElementById("jurusan").value = data.jurusan;
+                                    document.getElementById("jabatan").value = data.jabatan;
+                                    document.getElementById("no_rekening").textContent = data.rekening;
+                                    document.getElementById("nama_rekening").textContent = data
+                                        .nama_rekening;
+                                }
+                            })
+                            .catch(error => {
+                                console.error("Error:", error);
+                                document.getElementById("nama").value = "";
+                                document.getElementById("jurusan").value = "";
+                                document.getElementById("jabatan").value = "";
+                                document.getElementById("no_rekening").textContent = "XXXX-XXXX-XXXXX";
+                                document.getElementById("nama_rekening").textContent = "DWP Polije";
+                            });
+                    } else {
                         document.getElementById("nama").value = "";
                         document.getElementById("jurusan").value = "";
                         document.getElementById("jabatan").value = "";
                         document.getElementById("no_rekening").textContent = "XXXX-XXXX-XXXXX";
                         document.getElementById("nama_rekening").textContent = "DWP Polije";
-                    });
-            } else {
-                document.getElementById("nama").value = "";
-                document.getElementById("jurusan").value = "";
-                document.getElementById("jabatan").value = "";
-                document.getElementById("no_rekening").textContent = "XXXX-XXXX-XXXXX";
-                document.getElementById("nama_rekening").textContent = "DWP Polije";
+                    }
+                });
+            });
+        </script>
+
+
+        <script>
+            function previewImage(event) {
+                const fileInput = event.target;
+                const file = fileInput.files[0];
+                const preview = document.getElementById('preview');
+                const uploadText = document.getElementById('upload-text');
+                const formatText = document.getElementById('format-text');
+                const removeBtn = document.getElementById('remove-btn');
+                const uploadBox = document.getElementById('fileUploadBox');
+
+                if (file) {
+                    // Validate file size (2MB = 2097152 bytes)
+                    if (file.size > 2097152) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "File Terlalu Besar!",
+                            text: "Ukuran file maksimal adalah 2MB",
+                            scrollbarPadding: false
+                        });
+                        fileInput.value = "";
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.style.maxWidth = "100%";
+                        preview.style.maxHeight = "180px";
+                        preview.style.borderRadius = "12px";
+                        preview.style.objectFit = "contain";
+                        preview.style.cursor = "pointer";
+                        preview.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+                        preview.onclick = openModal;
+
+                        uploadText.style.display = "none";
+                        formatText.style.display = "none";
+                        removeBtn.style.display = "flex";
+                        uploadBox.style.borderColor = "#27ae60";
+                        uploadBox.style.background = "linear-gradient(135deg, #f0fff4 0%, #e6ffed 100%)";
+                    };
+                    reader.readAsDataURL(file);
+                }
             }
-        });
-    });
-</script>
 
+            function removeImage(event) {
+                event.stopPropagation();
 
-    <script>
-        function previewImage(event) {
-            const fileInput = event.target;
-            const file = fileInput.files[0];
-            const preview = document.getElementById('preview');
-            const uploadText = document.getElementById('upload-text');
-            const formatText = document.getElementById('format-text');
-            const removeBtn = document.getElementById('remove-btn');
-            const uploadBox = document.getElementById('fileUploadBox');
+                const preview = document.getElementById('preview');
+                const uploadText = document.getElementById('upload-text');
+                const formatText = document.getElementById('format-text');
+                const removeBtn = document.getElementById('remove-btn');
+                const fileInput = document.getElementById('file');
+                const uploadBox = document.getElementById('fileUploadBox');
 
-            if (file) {
-                // Validate file size (2MB = 2097152 bytes)
-                if (file.size > 2097152) {
+                preview.src = "images/arrow.png";
+                preview.style.maxWidth = "80px";
+                preview.style.maxHeight = "80px";
+                preview.style.cursor = "default";
+                preview.style.boxShadow = "none";
+                preview.onclick = null;
+
+                uploadText.style.display = "block";
+                formatText.style.display = "block";
+                removeBtn.style.display = "none";
+                fileInput.value = "";
+                uploadBox.style.borderColor = "#3088d4";
+                uploadBox.style.background = "linear-gradient(135deg, #f8fbff 0%, #f0f7ff 100%)";
+            }
+
+            function openModal() {
+                const modal = document.getElementById('imageModal');
+                const modalImg = document.getElementById('modalImg');
+                const preview = document.getElementById('preview');
+                const fileInput = document.getElementById('file');
+
+                modal.style.display = "flex";
+                modalImg.src = preview.src;
+
+                fileInput.disabled = true;
+            }
+
+            function closeModal() {
+                const modal = document.getElementById('imageModal');
+                const fileInput = document.getElementById('file');
+                modal.style.display = "none";
+                fileInput.disabled = false;
+            }
+
+            function copyRekening() {
+                const rekElement = document.getElementById('no_rekening');
+                let rekText = rekElement.textContent || rekElement.innerText;
+
+                if (rekText === "Memuat data..." || rekText === "XXXX-XXXX-XXXXX") {
+                    return; // Abaikan jika data belum ada
+                }
+
+                const cleanedText = rekText.replace(/\D/g, "");
+
+                navigator.clipboard.writeText(cleanedText).then(() => {
+                    // Notifikasi ala Toast (kecil & simpel)
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true
+                    });
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Nomor rekening disalin'
+                    });
+                }).catch(err => {
+                    console.error('Gagal menyalin: ', err);
+                });
+            }
+        </script>
+
+        <script>
+            document.getElementById('nik').addEventListener('input', function() {
+                let nik = this.value.trim();
+                const submitBtn = document.getElementById('submitBtn');
+
+                // Pastikan tombol submit selalu aktif
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('disabled');
+
+                // Jika NIK berisi huruf, munculkan pop-up dan kosongkan input
+                if (/\D/.test(nik)) { // \D = mendeteksi karakter selain angka
                     Swal.fire({
-                        icon: "error",
-                        title: "File Terlalu Besar!",
-                        text: "Ukuran file maksimal adalah 2MB",
+                        icon: "warning",
+                        title: "Input Tidak Valid!",
+                        text: "NIK hanya boleh berisi angka!",
                         scrollbarPadding: false
                     });
-                    fileInput.value = "";
+                    this.value = ""; // Kosongkan input NIK
                     return;
                 }
 
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    preview.style.maxWidth = "100%";
-                    preview.style.maxHeight = "180px";
-                    preview.style.borderRadius = "12px";
-                    preview.style.objectFit = "contain";
-                    preview.style.cursor = "pointer";
-                    preview.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
-                    preview.onclick = openModal;
-
-                    uploadText.style.display = "none";
-                    formatText.style.display = "none";
-                    removeBtn.style.display = "flex";
-                    uploadBox.style.borderColor = "#27ae60";
-                    uploadBox.style.background = "linear-gradient(135deg, #f0fff4 0%, #e6ffed 100%)";
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function removeImage(event) {
-            event.stopPropagation();
-
-            const preview = document.getElementById('preview');
-            const uploadText = document.getElementById('upload-text');
-            const formatText = document.getElementById('format-text');
-            const removeBtn = document.getElementById('remove-btn');
-            const fileInput = document.getElementById('file');
-            const uploadBox = document.getElementById('fileUploadBox');
-
-            preview.src = "images/arrow.png";
-            preview.style.maxWidth = "80px";
-            preview.style.maxHeight = "80px";
-            preview.style.cursor = "default";
-            preview.style.boxShadow = "none";
-            preview.onclick = null;
-
-            uploadText.style.display = "block"; 
-            formatText.style.display = "block";
-            removeBtn.style.display = "none";
-            fileInput.value = "";
-            uploadBox.style.borderColor = "#3088d4";
-            uploadBox.style.background = "linear-gradient(135deg, #f8fbff 0%, #f0f7ff 100%)";
-        }
-
-        function openModal() {
-            const modal = document.getElementById('imageModal');
-            const modalImg = document.getElementById('modalImg');
-            const preview = document.getElementById('preview');
-            const fileInput = document.getElementById('file');
-
-            modal.style.display = "flex";
-            modalImg.src = preview.src;
-
-            fileInput.disabled = true;
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('imageModal');
-            const fileInput = document.getElementById('file');
-
-            modal.style.display = "none";
-
-            fileInput.disabled = false;
-        }
-    </script>
-
-    <script>
-    document.getElementById('nik').addEventListener('input', function() {
-        let nik = this.value.trim();
-        const submitBtn = document.getElementById('submitBtn');
-
-        // Pastikan tombol submit selalu aktif
-        submitBtn.disabled = false;
-        submitBtn.classList.remove('disabled');
-
-        // Jika NIK berisi huruf, munculkan pop-up dan kosongkan input
-        if (/\D/.test(nik)) {  // \D = mendeteksi karakter selain angka
-            Swal.fire({
-                icon: "warning",
-                title: "Input Tidak Valid!",
-                text: "NIK hanya boleh berisi angka!",
-                scrollbarPadding: false
+                // Jika NIK dikosongkan, reset kolom Nama, Jurusan, dan Jabatan
+                if (nik === "") {
+                    document.getElementById('nama').value = "";
+                    document.getElementById('jurusan').value = "";
+                    document.getElementById('jabatan').value = "";
+                }
             });
-            this.value = ""; // Kosongkan input NIK
-            return;
-        }
 
-        // Jika NIK dikosongkan, reset kolom Nama, Jurusan, dan Jabatan
-        if (nik === "") {
-            document.getElementById('nama').value = "";
-            document.getElementById('jurusan').value = "";
-            document.getElementById('jabatan').value = "";
-        }
-    });
+            function submitForm() {
+                const nik = document.getElementById('nik').value.trim();
+                const hp = document.getElementById('hp').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const fileInput = document.getElementById('file').files[0];
 
-    function submitForm() {
-        const nik = document.getElementById('nik').value.trim();
-        const hp = document.getElementById('hp').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const fileInput = document.getElementById('file').files[0];
+                // Validasi input tidak boleh kosong
+                if (!nik || !hp || !email || !fileInput) {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Oops...",
+                        text: "Harap lengkapi semua data!",
+                        scrollbarPadding: false
+                    });
+                    return;
+                }
 
-        // Validasi input tidak boleh kosong
-        if (!nik || !hp || !email || !fileInput) {
-            Swal.fire({
-                icon: "warning",
-                title: "Oops...",
-                text: "Harap lengkapi semua data!",
-                scrollbarPadding: false
-            });
-            return;
-        }
+                // Validasi ekstensi file hanya boleh jpg, jpeg, png
+                const allowedExtensions = ["image/jpeg", "image/png", "image/jpg"];
+                if (!allowedExtensions.includes(fileInput.type)) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Format File Tidak Valid",
+                        text: "Hanya diperbolehkan file JPG, JPEG, dan PNG!",
+                        scrollbarPadding: false
+                    });
+                    return;
+                }
 
-        // Validasi ekstensi file hanya boleh jpg, jpeg, png
-        const allowedExtensions = ["image/jpeg", "image/png", "image/jpg"];
-        if (!allowedExtensions.includes(fileInput.type)) {
-            Swal.fire({
-                icon: "error",
-                title: "Format File Tidak Valid",
-                text: "Hanya diperbolehkan file JPG, JPEG, dan PNG!",
-                scrollbarPadding: false
-            });
-            return;
-        }
-
-        // Show loading popup before sending request
-        Swal.fire({
-            title: 'Sedang Mengirim...',
-            text: 'Mohon tunggu sebentar',
-            scrollbarPadding: false,
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading()
-            }
-        });
-
-        let formData = new FormData();
-        formData.append('nik', nik);
-        formData.append('hp', hp);
-        formData.append('email', email);
-        formData.append('bukti_pembayaran', fileInput);
-
-        // Ambil CSRF token
-        const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
-        if (!csrfTokenMeta) {
-            Swal.fire({
-                icon: "error",
-                title: "Error!",
-                text: "Token CSRF tidak ditemukan.",
-                scrollbarPadding: false
-            });
-            return;
-        }
-        const csrfToken = csrfTokenMeta.getAttribute('content');
-
-        fetch('/submit-pembayaran', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRF-TOKEN': csrfToken,
-                'Accept': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
+                // Show loading popup before sending request
                 Swal.fire({
-                    icon: "success",
-                    title: "Berhasil!",
-                    text: "Form berhasil terkirim. Silahkan cek email dan whatsapp anda!",
-                    scrollbarPadding: false
-                }).then(() => {
-                    window.location.href = "/";
+                    title: 'Sedang Mengirim...',
+                    text: 'Mohon tunggu sebentar',
+                    scrollbarPadding: false,
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    }
                 });
 
-                if (data.pdf_url) {
-                setTimeout(() => {
-                const link = document.createElement('a');
-                link.href = data.pdf_url;
-                link.download = data.pdf_url.split('/').pop();
-                link.click();
-            }, 500); // 500ms delay
-        }
+                let formData = new FormData();
+                formData.append('nik', nik);
+                formData.append('hp', hp);
+                formData.append('email', email);
+                formData.append('bukti_pembayaran', fileInput);
 
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Gagal!",
-                    text: data.error || "Terjadi kesalahan.",
-                    scrollbarPadding: false
-                });
+                // Ambil CSRF token
+                const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
+                if (!csrfTokenMeta) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error!",
+                        text: "Token CSRF tidak ditemukan.",
+                        scrollbarPadding: false
+                    });
+                    return;
+                }
+                const csrfToken = csrfTokenMeta.getAttribute('content');
+
+                fetch('/submit-pembayaran', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Berhasil!",
+                                text: "Form berhasil terkirim. Silahkan cek email dan whatsapp anda!",
+                                scrollbarPadding: false
+                            }).then(() => {
+                                window.location.href = "/";
+                            });
+
+                            if (data.pdf_url) {
+                                setTimeout(() => {
+                                    const link = document.createElement('a');
+                                    link.href = data.pdf_url;
+                                    link.download = data.pdf_url.split('/').pop();
+                                    link.click();
+                                }, 500); // 500ms delay
+                            }
+
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Gagal!",
+                                text: data.error || "Terjadi kesalahan.",
+                                scrollbarPadding: false
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error!",
+                            text: "Terjadi kesalahan dalam mengirim data.",
+                            scrollbarPadding: false
+                        });
+                        console.error("Error:", error);
+                    });
             }
-        })
-        .catch(error => {
-            Swal.fire({
-                icon: "error",
-                title: "Error!",
-                text: "Terjadi kesalahan dalam mengirim data.",
-                scrollbarPadding: false
+        </script>
+
+        <!-- DI HALAMAN FORM OTOMATIS NIK TERISI -->
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const nik = urlParams.get('nik');
+
+                if (nik) {
+                    document.getElementById('nik').value = nik;
+                    checkFields(); // Panggil fungsi untuk mengambil data rekening
+                }
             });
-            console.error("Error:", error);
-        });
-    }
-    </script>
+        </script>
 
-    <!-- DI HALAMAN FORM OTOMATIS NIK TERISI -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const urlParams = new URLSearchParams(window.location.search);
-            const nik = urlParams.get('nik');
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-        if (nik) {
-            document.getElementById('nik').value = nik;
-            checkFields(); // Panggil fungsi untuk mengambil data rekening
-        }
-    });
-    </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 </body>
+
 </html>
