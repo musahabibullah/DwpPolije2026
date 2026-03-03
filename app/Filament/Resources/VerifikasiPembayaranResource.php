@@ -299,6 +299,31 @@ class VerifikasiPembayaranResource extends Resource
                         ]);
                     }),
 
+                Tables\Actions\Action::make('download_invoice')
+                    ->label('Download Invoice')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->color('primary')
+                    ->action(function (VerifikasiPembayaran $record): ?BinaryFileResponse {
+                        $controller = new \App\Http\Controllers\VerifikasiPembayaranController();
+
+                        // Ambil data validasi penerimaan yang terkait
+                        $validasiPenerimaan = $record->validasiPenerimaan;
+
+                        // Jika validasi penerimaan tidak ditemukan, tampilkan peringatan
+                        if (!$validasiPenerimaan) {
+                            \Filament\Notifications\Notification::make()
+                                ->title('Peringatan')
+                                ->body('Anda harus memverifikasi pembayaran terlebih dahulu sebelum mengunduh invoice.')
+                                ->warning()
+                                ->send();
+
+                            return null; // Tidak melanjutkan proses
+                        }
+
+                        // Unduh invoice menggunakan controller
+                        return $controller->downloadInvoice($record);
+                    }),
+
                 Tables\Actions\DeleteAction::make()
             ])
             ->headerActions([

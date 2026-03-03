@@ -90,4 +90,9 @@ class VerifikasiPembayaran extends Model
     {
         return $this->status === self::STATUS_DITOLAK;
     }
+
+    public function validasiPenerimaan()
+    {
+        return $this->hasOne(ValidasiPenerimaan::class, 'verifikasi_pembayaran_id');
+    }
 }

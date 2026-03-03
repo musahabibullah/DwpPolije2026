@@ -110,7 +110,7 @@ class VerifikasiPembayaranController extends Controller
     }
 
     public function generatePDF($data, $pdfPath, $positionY = 50)
-    {  // ← ubah 70 → 20
+    {
         $pdf = new FPDF();
         $pdf->AddPage();
 
@@ -121,7 +121,7 @@ class VerifikasiPembayaranController extends Controller
             Log::error("Background image tidak ditemukan di: " . $backgroundPath);
         }
 
-        $pdf->SetY($positionY);  // ← tidak ada lagi Cell kosong + SetFont B 16
+        $pdf->SetY($positionY);
         $pdf->Ln(5);
 
         $pdf->SetFont('Arial', 'B', 12);
@@ -284,5 +284,42 @@ class VerifikasiPembayaranController extends Controller
             $nomor = "62" . substr($nomor, 1);
         }
         return $nomor;
+    }
+
+    public function downloadInvoice(VerifikasiPembayaran $verifikasiPembayaran)
+    {
+        // Ambil data validasi penerimaan yang terkait
+        $validasiPenerimaan = $verifikasiPembayaran->validasiPenerimaan;
+
+        // Jika validasi penerimaan tidak ditemukan, kembalikan pesan error
+        if (!$validasiPenerimaan) {
+            abort(404, 'Validasi penerimaan tidak ditemukan.');
+        }
+
+        // Ambil kode unik dari validasi penerimaan
+        $kodeUnik = $validasiPenerimaan->kode_unik;
+
+        // Siapkan data untuk PDF
+        $penerima = $verifikasiPembayaran->penerima;
+        $data = [
+            'nomor_transaksi' => $verifikasiPembayaran->kode_transaksi ?? random_int(100000, 999999),
+            'tanggal_pembayaran' => now()->format('Y-m-d'),
+            'nik' => $penerima->nik,
+            'nama' => $penerima->nama,
+            'jurusan' => $penerima->jurusan->nama_jurusan ?? 'N/A',
+            'email' => $penerima->email,
+            'no_telpon' => $penerima->no_telpon,
+            'meja' => $penerima->jurusan->meja_pengambilan ?? 'N/A',
+            'kode_unik' => $kodeUnik, // Gunakan kode unik dari validasi penerimaan
+        ];
+
+        // Path untuk menyimpan PDF
+        $pdfPath = storage_path('app/temp_invoice_' . $kodeUnik . '.pdf');
+
+        // Generate PDF
+        $this->generatePDF($data, $pdfPath);
+
+        // Return file untuk diunduh
+        return response()->download($pdfPath, 'invoice_' . $penerima->nik . '.pdf')->deleteFileAfterSend(true);
     }
 }
