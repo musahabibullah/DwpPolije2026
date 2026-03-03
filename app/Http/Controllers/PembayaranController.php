@@ -129,63 +129,40 @@ class PembayaranController extends Controller
 
             $marginLeft = 20;
 
-            // Judul dokumen
-            $pdf->SetFont('Arial', 'B', 16);
-            $pdf->Cell(0, 10, '', 0, 1, 'C');
             $pdf->Ln(65);
 
-            // Informasi transaksi
-            $pdf->SetX($marginLeft);
-            $pdf->SetFont('Arial', 'B', 15);
-            $pdf->Cell(50, 10, 'Nomor Transaksi:', 0);
-            $pdf->SetFont('Arial', '', 15);
-            $pdf->Cell(0, 10, $transactionCode, 0, 1);
+            // ===== FUNCTION PRINT FIELD (AUTO WRAP & RAPI) =====
+            $printField = function ($label, $value) use ($pdf, $marginLeft) {
 
-            $pdf->SetX($marginLeft);
-            $pdf->SetFont('Arial', 'B', 15);
-            $pdf->Cell(50, 10, 'Waktu Transaksi:', 0);
-            $pdf->SetFont('Arial', '', 15);
-            $pdf->Cell(0, 10, $currentTime, 0, 1);
+                $labelWidth = 50;   // lebar label
+                $valueWidth = 120;  // lebar isi (aman untuk A4)
+                $lineHeight = 10;    // tinggi baris
 
-            $pdf->SetX($marginLeft);
-            $pdf->SetFont('Arial', 'B', 15);
-            $pdf->Cell(50, 10, 'Nama:', 0);
-            $pdf->SetFont('Arial', '', 15);
-            $pdf->Cell(0, 10, $penerima->nama, 0, 1);
+                $pdf->SetX($marginLeft);
 
-            $pdf->SetX($marginLeft);
-            $pdf->SetFont('Arial', 'B', 15);
-            $pdf->Cell(50, 10, 'Jurusan:', 0);
-            $pdf->SetFont('Arial', '', 15);
-            $pdf->Cell(0, 10, $jurusan, 0, 1);
+                // label
+                $pdf->SetFont('Arial', 'B', 15);
+                $pdf->Cell($labelWidth, $lineHeight, $label, 0, 0);
+
+                // value
+                $pdf->SetFont('Arial', '', 15);
+
+                $x = $pdf->GetX();
+                $y = $pdf->GetY();
+
+                $pdf->MultiCell($valueWidth, $lineHeight, $value);
+
+                // atur posisi Y biar lanjutnya rapi
+                $pdf->SetY($y + max($lineHeight, $pdf->GetY() - $y));
+            };
+
+            // ===== CETAK DATA =====
+            $printField('Nomor Transaksi:', $transactionCode);
+            $printField('Waktu Transaksi:', $currentTime);
+            $printField('Nama:', $penerima->nama);
+            $printField('Jurusan:', $jurusan);
 
             $pdf->Ln(10);
-
-            // Ambil tinggi halaman
-            $pageHeight = $pdf->GetPageHeight();
-
-            $kuponY = $pdf->GetPageHeight() - 57;
-            $kuponWidth = 40;
-
-            $teksKupon = strtoupper(
-                $transactionCode . "\n" .
-                $penerima->nama . "\n" .
-                $jurusan
-            );
-
-            $pdf->SetFont('Arial', 'B', 7);
-
-            // Kupon 1 (atur sendiri)
-            $pdf->SetXY(75, $kuponY);
-            $pdf->MultiCell($kuponWidth, 5, $teksKupon, 0, 'L');
-
-            // Kupon 2 (atur sendiri)
-            $pdf->SetXY(122, $kuponY);
-            $pdf->MultiCell($kuponWidth, 5, $teksKupon, 0, 'L');
-
-            // Kupon 3 (atur sendiri)
-            $pdf->SetXY(168, $kuponY);
-            $pdf->MultiCell($kuponWidth, 5, $teksKupon, 0, 'L');
 
             // Simpan PDF
             $pdf->Output('F', $pdfPath);

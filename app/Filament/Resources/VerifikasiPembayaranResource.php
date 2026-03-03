@@ -132,16 +132,16 @@ class VerifikasiPembayaranResource extends Resource
                                         return new HtmlString('
                                             <div class="space-y-4">
                                                 <div class="flex justify-center">
-                                                    <img 
-                                                        src="' . $imageUrl . '" 
-                                                        alt="Bukti Pembayaran" 
-                                                        class="max-w-full h-auto rounded-lg shadow-lg" 
+                                                    <img
+                                                        src="' . $imageUrl . '"
+                                                        alt="Bukti Pembayaran"
+                                                        class="max-w-full h-auto rounded-lg shadow-lg"
                                                         style="max-height: 400px;"
                                                     />
                                                 </div>
                                                 <div class="flex justify-center">
-                                                    <a 
-                                                        href="' . $downloadUrl . '" 
+                                                    <a
+                                                        href="' . $downloadUrl . '"
                                                         class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
                                                     >
                                                         Download Bukti Pembayaran
@@ -157,12 +157,12 @@ class VerifikasiPembayaranResource extends Resource
                                     ])
                                     ->required()
                                     ->live(),
-                                    Forms\Components\Textarea::make('alasan_ditolak')
+                                Forms\Components\Textarea::make('alasan_ditolak')
                                     ->label('Alasan Ditolak')
                                     ->placeholder('Masukkan alasan mengapa pembayaran ditolak')
                                     ->helperText('Alasan ini akan dikirimkan ke pengguna melalui WhatsApp')
-                                    ->required(fn (Get $get): bool => $get('status') === 'ditolak')
-                                    ->visible(fn (Get $get): bool => $get('status') === 'ditolak'),
+                                    ->required(fn(Get $get): bool => $get('status') === 'ditolak')
+                                    ->visible(fn(Get $get): bool => $get('status') === 'ditolak'),
                             ]),
                     ])
 
@@ -196,16 +196,16 @@ class VerifikasiPembayaranResource extends Resource
                         return new HtmlString('
                             <div class="space-y-4">
                                 <div class="flex justify-center">
-                                    <img 
-                                        src="' . $imageUrl . '" 
-                                        alt="Bukti Pembayaran" 
-                                        class="max-w-full h-auto rounded-lg shadow-lg" 
+                                    <img
+                                        src="' . $imageUrl . '"
+                                        alt="Bukti Pembayaran"
+                                        class="max-w-full h-auto rounded-lg shadow-lg"
                                         style="max-height: 400px;"
                                     />
                                 </div>
                                 <div class="flex justify-center">
-                                    <a 
-                                        href="' . $downloadUrl . '" 
+                                    <a
+                                        href="' . $downloadUrl . '"
                                         class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
                                     >
                                         Download Bukti Pembayaran
@@ -217,86 +217,87 @@ class VerifikasiPembayaranResource extends Resource
                     ->modalSubmitAction(false)
                     ->modalCancelActionLabel('Close'),
 
-                    Tables\Actions\Action::make('download_pdf')
-                        ->label('Download Invoice')
-                        ->icon('heroicon-o-document-arrow-down')
-                        ->color('primary')
-                        ->action(function (VerifikasiPembayaran $record): BinaryFileResponse {
-                            // Generate PDF filename and path
-                            $pdfFilename = 'invoice_' . $record->penerima->nik . '_' . now()->timestamp . '.pdf';
-                            $pdfFolder = 'invoices';
-                            
-                            // Ensure the directory exists
-                            Storage::disk('public')->makeDirectory($pdfFolder);
-                            
-                            // Path for saving PDF
-                            $pdfPath = storage_path('app/public/' . $pdfFolder . '/' . $pdfFilename);
-                            
-                            // Set up data variables
-                            $jurusan = $record->penerima->jurusan ? $record->penerima->jurusan->nama_jurusan : 'N/A';
-                            $currentTime = now()->format('d-m-Y H:i:s');
-                            $transactionCode = $record->kode_transaksi ?? rand(1000000, 9999999);
-                                
-                            // Create PDF with FPDF
-                            $pdf = new FPDF();
-                            $pdf->AddPage();
+                Tables\Actions\Action::make('download_pdf')
+                    ->label('Download bukti pembayaran')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->color('primary')
+                    ->action(function (VerifikasiPembayaran $record): BinaryFileResponse {
+                        // Generate PDF filename and path
+                        $pdfFilename = 'bukti_pembayaran_' . $record->penerima->nik . '_' . now()->timestamp . '.pdf';
+                        $pdfFolder = 'invoices';
 
-                            // Add background image
-                            $backgroundPath = public_path('images/buktipembayaran.png');
-                            if (file_exists($backgroundPath)) {
-                                $pdf->Image($backgroundPath, 0, 0, 210, 297);
-                            } else {
-                                \Log::error("Background image tidak ditemukan di: " . $backgroundPath);
-                            }
+                        // Ensure the directory exists
+                        Storage::disk('public')->makeDirectory($pdfFolder);
 
-                            $marginLeft = 20;
-                            
-                            // Document title
-                            $pdf->SetFont('Arial', 'B', 16);
-                            $pdf->Cell(0, 10, '', 0, 1, 'C');
-                            $pdf->Ln(65);
-                            
-                            // Transaction information
-                            $pdf->SetX($marginLeft);
-                            $pdf->SetFont('Arial', 'B', 15);
-                            $pdf->Cell(50, 10, 'Nomor Transaksi:', 0);
-                            $pdf->SetFont('Arial', '', 15);
-                            $pdf->Cell(0, 10, $transactionCode, 0, 1);
-                            
-                            $pdf->SetX($marginLeft);
-                            $pdf->SetFont('Arial', 'B', 15);
-                            $pdf->Cell(50, 10, 'Waktu Transaksi:', 0);
-                            $pdf->SetFont('Arial', '', 15);
-                            $pdf->Cell(0, 10, $currentTime, 0, 1);
-                            
-                            $pdf->SetX($marginLeft);
-                            $pdf->SetFont('Arial', 'B', 15);
-                            $pdf->Cell(50, 10, 'Nama:', 0);
-                            $pdf->SetFont('Arial', '', 15);
-                            $pdf->Cell(0, 10, $record->penerima->nama, 0, 1);
-                            
-                            $pdf->SetX($marginLeft);
-                            $pdf->SetFont('Arial', 'B', 15);
-                            $pdf->Cell(50, 10, 'Jurusan:', 0);
-                            $pdf->SetFont('Arial', '', 15);
-                            $pdf->Cell(0, 10, $jurusan, 0, 1);
+                        // Path for saving PDF
+                        $pdfPath = storage_path('app/public/' . $pdfFolder . '/' . $pdfFilename);
 
-                            $pdf->Ln(10);
-                            
-                            // Save PDF
-                            $pdf->Output('F', $pdfPath);
+                        // Set up data variables
+                        $jurusan = $record->penerima->jurusan ? $record->penerima->jurusan->nama_jurusan : 'N/A';
+                        $currentTime = now()->format('d-m-Y H:i:s');
+                        $transactionCode = $record->kode_transaksi ?? rand(1000000, 9999999);
 
-                            // Check if file was created successfully
-                            if (!file_exists($pdfPath)) {
-                                \Log::error('Gagal membuat PDF: ' . $pdfPath);
-                                throw new \Exception('Gagal membuat PDF');
-                            }
+                        // Create PDF with FPDF
+                        $pdf = new FPDF();
+                        $pdf->AddPage();
 
-                            // Return the PDF for download
-                            return response()->download($pdfPath, $pdfFilename, [
-                                'Content-Type' => 'application/pdf',
-                            ]);
-                        }),
+                        // Add background image
+                        $backgroundPath = public_path('images/buktipembayaran.png');
+                        if (file_exists($backgroundPath)) {
+                            $pdf->Image($backgroundPath, 0, 0, 210, 297);
+                        } else {
+                            \Log::error("Background image tidak ditemukan di: " . $backgroundPath);
+                        }
+
+                        $marginLeft = 20;
+
+                        // Document title
+                        $pdf->SetFont('Arial', 'B', 16);
+                        $pdf->Cell(0, 10, '', 0, 1, 'C');
+                        $pdf->Ln(65);
+
+                        // Transaction information
+                        $pdf->SetX($marginLeft);
+                        $pdf->SetFont('Arial', 'B', 15);
+                        $pdf->Cell(50, 10, 'Nomor Transaksi:', 0);
+                        $pdf->SetFont('Arial', '', 15);
+                        $pdf->Cell(0, 10, $transactionCode, 0, 1);
+
+                        $pdf->SetX($marginLeft);
+                        $pdf->SetFont('Arial', 'B', 15);
+                        $pdf->Cell(50, 10, 'Waktu Transaksi:', 0);
+                        $pdf->SetFont('Arial', '', 15);
+                        $pdf->Cell(0, 10, $currentTime, 0, 1);
+
+                        $pdf->SetX($marginLeft);
+                        $pdf->SetFont('Arial', 'B', 15);
+                        $pdf->Cell(50, 10, 'Nama:', 0);
+                        $pdf->SetFont('Arial', '', 15);
+                        $pdf->Cell(0, 10, $record->penerima->nama, 0, 1);
+
+                        $pdf->SetX($marginLeft);
+                        $pdf->SetFont('Arial', 'B', 15);
+                        $pdf->Cell(50, 10, 'Jurusan:', 0);
+                        $pdf->SetFont('Arial', '', 15);
+                        $pdf->Cell(0, 10, $jurusan, 0, 1);
+
+                        $pdf->Ln(10);
+
+
+                        // Save PDF
+                        $pdf->Output('F', $pdfPath);
+
+                        // Check if file was created successfully
+                        if (!file_exists($pdfPath)) {
+                            \Log::error('Gagal membuat PDF: ' . $pdfPath);
+                            throw new \Exception('Gagal membuat PDF');
+                        }
+
+                        // Return the PDF for download
+                        return response()->download($pdfPath, $pdfFilename, [
+                            'Content-Type' => 'application/pdf',
+                        ]);
+                    }),
 
                 Tables\Actions\DeleteAction::make()
             ])
